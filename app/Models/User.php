@@ -41,6 +41,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function commentsby(){
+        return $this->hasMany('App\Models\Comment','user_id');   
+     }
+     public function likes(){
+        return $this->belongsToMany('App\Models\Comment');    
+    }
 
-    public function who(){ return $this->hasOne('App\Models\My_model','user_id');    } 
 }
