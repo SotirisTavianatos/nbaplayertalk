@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('stats', function (Blueprint $table) {
             $table->id();
             $table->integer('points');
-            $table->integer('player_id')->unsigned();
+            $table->foreignId('player_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
