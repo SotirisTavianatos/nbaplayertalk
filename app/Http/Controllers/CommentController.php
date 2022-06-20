@@ -22,6 +22,11 @@ class CommentController extends Controller
     {
         return "comment saved!";
     }
+
+    public function __construct()
+{
+    //$this->middleware('throttle:comment')->only('create');
+}
     
     /**
      * Show the form for creating a new resource.
@@ -110,48 +115,38 @@ class CommentController extends Controller
     }
 
     public function playerinfo($playername){
-        $idpaixth=DB::table('players')->where('name', $playername)->value('id');
+        $idpaixth=DB::table('players')->where('lastname', $playername)->value('id');
         $stat=Stat::find($idpaixth);
         $player=Player::find($idpaixth);
-        $currentteam=$player->currentteam($idpaixth);
-        $comments=$player->commentsfor;
+        $currentteam=$player->currentteam();
+        $comments=$player->comments;
         return view('playerpage',compact('stat','player','currentteam','comments'));
      }
 
      public function teaminfo($teamname){
         $team=DB::table('teams')->where('name', $teamname)->first();
-        $players=Team::find($team->id)->played;
+        $players=Team::find($team->id)->players;
         return view('teampage',compact('team','players'));
      }
 
      public function allcomments(){
-         $comments=DB::table('comments')->orderBy('likes','desc')->get();
-         $players=[];
-         $likes=[];
-         $comment=[];
-         foreach ($comments as $c){
-         array_push($players,Player::find($c->player_id)->name);
-         array_push($comment,$c);
-         }
-         foreach ($comments as $c){
-             $com=Comment::find($c->id);
-             $like=$com->likedby()->where('user_id',auth()->user()->id)->exists();
-             if($like==1)
-             array_push($likes,1);
-             else
-             array_push($likes,0);   
-         }
-        return view('commentspage',compact('comment','players','likes'));
+        if (Auth::check()) 
+        {
+        $comments=Comment::with('player','likedby')->orderBy('likes','desc')->get();
+        return view('commentspage',compact('comments'));
+        }
+        else  
+            return redirect('/login');
      }
 
      public function mycomments(){
-        if (Auth::check()) {
-            $comments=DB::table('comments')->where('user_id',auth()->user()->id)->orderBy('created_at','desc')->get();
-            $players=[];
-            foreach ($comments as $c)
-            array_push($players,Player::find($c->player_id)->name);
-            return view('mycommentspage',compact('comments','players'));
-            }
+        if (Auth::check()) 
+        {
+            $players=Player::with(['comments' => function ($query) {
+                $query->where('user_id',auth()->user()->id);
+            }])->get();
+            return view('mycommentspage',compact('players'));
+        }
         else  
             return redirect('/login');
        
@@ -189,4 +184,33 @@ class CommentController extends Controller
         $comment->likedby()->detach(auth()->user()->id);
         return redirect('/allcomments');
     }
+
+    public function currentroster($teamname){
+        $team=Team::where('name', $teamname)->first();
+        $playersid=DB::table('player_team')->where('team_id',$team->id)->get();
+        $players=collect();
+        foreach ($playersid as $p) {
+            if(DB::table('player_team')->where('team_id',$team->id)->where('player_id',$p->player_id)->whereNull('until')->exists()){
+                $players->push(Player::find($p->player_id));
+            }
+        }
+        $year=NUll;
+        return view('roster',compact('team','players','year'));
+        
+     }
+
+    public function yearroster($year,$teamname){
+        $team=Team::where('name', $teamname)->first();
+        $playersid=DB::table('player_team')->where('team_id',$team->id)->get();
+        $players=collect();
+        foreach ($playersid as $p) {
+            if(DB::table('player_team')->where('team_id',$team->id)->where('player_id',$p->player_id)->where('from','<',$year)->whereNull('until')->exists()){
+                $players->push(Player::find($p->player_id));
+            }
+            elseif(DB::table('player_team')->where('team_id',$team->id)->where('player_id',$p->player_id)->where('from','<',$year)->where('until','>',$year)->exists()){
+                $players->push(Player::find($p->player_id));
+            }
+        }
+        return view('roster',compact('team','players','year'));
+     }
 }
