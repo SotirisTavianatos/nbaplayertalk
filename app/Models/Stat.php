@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Stat extends Model
 {
     use HasFactory;
-    public function who(){
+    //stats of what player
+    public function player(){
         return $this->belongsTo('App\Models\Player','player_id');    }
 }

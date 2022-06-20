@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Team extends Model
 {
     use HasFactory;
-    public function played(){
+    //players that played with this team
+    public function players(){
         return $this->belongsToMany('App\Models\Player');    
     }
 }

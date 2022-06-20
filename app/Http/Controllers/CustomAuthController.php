@@ -19,6 +19,10 @@ class CustomAuthController extends Controller
  
     public function customLogin(Request $request)
     {
+        if(Auth::check()){ 
+            return redirect("/nbaplayertalk");
+        }
+        else{
         $request->validate([
             'name' => 'required',
             'password' => 'required',
@@ -29,14 +33,20 @@ class CustomAuthController extends Controller
             return redirect()->intended('/nbaplayertalk')->withSuccess('Signed in');
         }
    
-        return redirect("login")->withSuccess('Login details are not valid');
+        return redirect("login")->withSuccess('Login details are not valid'); 
+    }
     }
  
  
  
     public function registration()
     {
+        if(Auth::check()){ 
+            return redirect("/nbaplayertalk");
+        }
+        else{
         return view('auth.registration');
+        }
     }
        
  

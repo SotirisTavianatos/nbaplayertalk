@@ -13,20 +13,22 @@ class Comment extends Model
         'player_id',
         'user_id',
     ];
-    public function commentedby()
+    //who wrote the comment
+    public function author()
     {
         return $this->belongsTo('App\Models\User','user_id');    
     }
-
-    public function commentedfor()
+    //about what player is this comment
+    public function player()
     {
         return $this->belongsTo('App\Models\Player','player_id');    
     }
-
-    public function notifyfor(){
+    //notifications of comment
+    public function notification(){
         return $this->hasMany('App\Models\Notification','comment_id');    
     }
 
+    //users that liked the comment
     public function likedby(){
         return $this->belongsToMany('App\Models\User');    
     }

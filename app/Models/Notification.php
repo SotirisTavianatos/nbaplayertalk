@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Notification extends Model
 {
     use HasFactory;
-
-    public function notificationsfor()
+    //about what comment is this notification
+    public function comment()
     {
         return $this->belongsTo('App\Models\Comment','comment_id');    
     }
