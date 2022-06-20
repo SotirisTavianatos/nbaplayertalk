@@ -24,7 +24,7 @@ class Player extends Model
     }
     //player's current team
     public function currentteam(){
-        return DB::table('player_team')->join('teams','team_id','=','player_team.team_id')->whereNull('until')->value('name');
+        return DB::table('player_team')->join('teams','team_id','=','player_team.team_id')->whereNotNull('from')->whereNull('until')->value('name');
     }
 
 }
