@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('content');
             $table->integer('player_id');
-            $table->integer('user_id');
             $table->integer('likes')->default('0');
             $table->timestamps();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
     }
 
