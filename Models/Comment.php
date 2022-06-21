@@ -30,7 +30,7 @@ class Comment extends Model
 
     //users that liked the comment
     public function likedby(){
-        return $this->belongsToMany('App\Models\User');    
+        return $this->belongsToMany('App\Models\User','comment_user_likes');    
     }
 
         
