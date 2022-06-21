@@ -50,4 +50,8 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\Comment','comment_user_likes');    
     }
 
+    public function notifications(){
+        return $this->hasMany('App\Models\Notification','user_id');   
+     }
+
 }
