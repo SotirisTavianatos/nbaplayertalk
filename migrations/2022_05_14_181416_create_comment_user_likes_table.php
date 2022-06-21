@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comment_user');
+        Schema::dropIfExists('comment_user_likes');
     }
 };
