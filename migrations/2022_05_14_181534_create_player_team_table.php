@@ -15,12 +15,22 @@ return new class extends Migration
     {
         Schema::create('player_team', function (Blueprint $table) {
             $table->id();
-            $table->integer('team_id');
-            $table->index("player_id");
-            $table->foreignId('player_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBiginteger('team_id');
+            $table->unsignedBigInteger('player_id');
             $table->year('from');//added this so we know the roster of any year
             $table->year('until')->nullable();//added this so we know the roster of any year
             $table->timestamps();
+
+            $table->index('player_id');
+            $table->foreign('player_id')->
+            references('id')->on('players')
+            ->onDelete('cascade');
+
+            $table->index('team_id');
+            $table->foreign('team_id')->
+            references('id')->on('teams')
+            ->onDelete('cascade');
+            
         });
     }
 
