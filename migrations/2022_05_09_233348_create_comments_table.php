@@ -18,8 +18,13 @@ return new class extends Migration
             $table->string('content');
             $table->integer('player_id');
             $table->integer('likes')->default('0');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+
+            $table->index('user_id');
+            $table->foreign('user_id')->
+            references('id')->on('users')
+            ->onDelete('cascade');
         });
     }
 
