@@ -16,8 +16,13 @@ return new class extends Migration
         Schema::create('stats', function (Blueprint $table) {
             $table->id();
             $table->integer('points');
-            $table->foreignId('player_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('player_id');
             $table->timestamps();
+
+            $table->index('player_id');
+            $table->foreign('player_id')->
+            references('id')->on('players')
+            ->onDelete('cascade');
         });
     }
 
