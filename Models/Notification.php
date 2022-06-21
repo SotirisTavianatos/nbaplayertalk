@@ -12,6 +12,11 @@ class Notification extends Model
     public function comment()
     {
         return $this->belongsTo('App\Models\Comment','comment_id');    
+
+    }
+    public function author()
+    {
+        return $this->belongsTo('App\Models\User','user_id');    
     }
 
 }
