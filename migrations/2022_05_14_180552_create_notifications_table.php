@@ -17,10 +17,14 @@ return new class extends Migration
             $table->id();
             $table->string('message');
             $table->enum('status',['NEW','SENT','READ']);
-            $table->index("user_id");
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('comments_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->foreign('user_id')->
+            references('id')->on('users')
+            ->onDelete('cascade');
         });
     }
 
